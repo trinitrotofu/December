@@ -1,0 +1,111 @@
+{% include "header.html" with title='Settings - '|add:site_name page_type='settings' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+  </div>
+  <div class="pusher">
+    <div class="ui top fixed large borderless menu">
+      <div class="ui container">
+        <a class="header item" href="/">{{ site_name }}</a>
+        <div class="right menu">
+          {% for i in page_links %}
+          <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+          {% endfor %}
+        </div>
+        <a class="toc right item">
+          <i class="sidebar icon"></i>
+        </a>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui hidden section divider"></div>
+    </div>
+    <div class="ui stackable centered grid container">
+      <div class="twelve wide column">
+        <div class="ui raised very padded large segment">
+          <h1 class="ui dividing header">System & User Settings</h1>
+          {% include 'messages.html' %}
+          <form class="ui form" method="post" autocomplete="off">{% csrf_token %}
+            <div class="required field">
+              <label>Site name</label>
+              <input type="text" name="site-name" placeholder="Site name" value="{{ site_name }}" required>
+            </div>
+            <div class="field">
+              <label>Site description</label>
+              <input type="text" name="site-description" placeholder="Site description" value="{{ site_description }}">
+            </div>
+            <div class="field">
+              <label>Advanced Settings (json)</label>
+              <textarea id="advanced-editor" name="advanced-settings">{{ advanced_settings }}</textarea>
+            </div>
+            <div class="ui divider"></div>
+            <div class="required field">
+              <label>Username</label>
+              <input type="text" name="username" placeholder="Username" value="{{ username }}" required>
+            </div>
+            <div class="required field">
+              <label>E-mail</label>
+              <input type="email" name="email" placeholder="E-mail" value="{{ email }}" required>
+            </div>
+            <div class="field">
+              <label>New Password (leave blank to remain unchanged)</label>
+              <input type="password" name="password" placeholder="New password" minlength="6" maxlength="32">
+            </div>
+            <div class="field">
+              <label>Confirm new password (leave blank to remain unchanged)</label>
+              <input type="password" name="confirm-password" placeholder="Confirm new password" minlength="6" maxlength="32">
+            </div>
+            <button class="ui primary labeled submit icon button" type="submit">
+              <i class="save icon"></i> Save
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui section divider"></div>
+      <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+        <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    $('#search-type')
+      .dropdown({
+        values: [
+          {
+            name: 'All',
+            value: 'all'
+          },
+          {
+            name: 'Post',
+            value: 'post'
+          },
+          {
+            name: 'Page',
+            value: 'page'
+          },
+          {
+            name: 'Draft',
+            value: 'draft'
+          },
+        ]
+      })
+      .dropdown('set selected', '{{ post_type }}');
+    var cm_editor = CodeMirror.fromTextArea(
+      document.getElementById("advanced-editor"),
+      {
+        mode: {
+          name: "javascript",
+          json: true,
+          statementIndent: 2,
+        },
+        lineWrapping: true,
+        tabSize: 2,
+        indentWithTabs: true,
+      }
+    );
+  </script>
+{% include "footer.html" with page_type='settings' %}

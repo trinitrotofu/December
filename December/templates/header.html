@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+  <title>{{ title }}</title>
+
+  <link href="{{ icon_url }}" rel="icon" type="image/png">
+
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/semantic-ui@2.4.2/dist/semantic.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="/static/css/december.css">
+  {% if page_type == 'index' or page_type == 'archives' %}
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/themes/prism-okaidia.css" />
+	<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/toolbar/prism-toolbar.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/line-numbers/prism-line-numbers.css" />
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.css" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/katex@0.15.1/dist/contrib/mathtex-script-type.min.js" defer></script>
+  {% endif %}
+  {% if page_type == 'archives' %}
+  <script>
+    function DecemberReply(cid) {
+      if (cid != "0") {
+        $('#comment-' + cid).append($('#reply-form'));
+        $('#cancel-reply').show();
+      }
+      else {
+        $('#comment-list').append($('#reply-form'));
+        $('#cancel-reply').hide();
+      }
+      $('#comment-parent').val(cid);
+    }
+  </script>
+  {% endif %}
+  {% if page_type == 'edit' or page_type == 'settings' %}
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.1/lib/codemirror.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.65.1/lib/codemirror.css">
+  {% if page_type == 'edit' %}
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.1/mode/markdown/markdown.js"></script>
+  {% else %}
+  <script src="https://cdn.jsdelivr.net/npm/codemirror@5.65.1/mode/javascript/javascript.js"></script>
+  {% endif %}
+  {% endif %}
+</head>
+<body>

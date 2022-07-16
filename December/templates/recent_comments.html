@@ -1,0 +1,23 @@
+<div class="ui raised very padded large segment">
+  <h4 class="ui header">Recent Comments</h4>
+  {% if recent_comment_list|length %}
+  {% for i in recent_comment_list %}
+  <div class="ui small comments">
+    <div class="comment">
+      <a class="avatar">
+        <img src="https://www.gravatar.com/avatar/{{ i.email_hash }}">
+      </a>
+      <div class="content">
+        <a class="author" href="/archives/{{ i.pid }}#comment-{{ i.cid }}">{{ i.author }}</a>
+        <div class="metadata">
+          <span class="date">{{ i.time }}</span>
+        </div>
+        <div class="text">{{ i.text|linebreaks }}</div>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p>No comments yet...</p>
+  {% endif %}
+</div>

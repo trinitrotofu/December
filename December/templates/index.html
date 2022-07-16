@@ -1,0 +1,122 @@
+{% include "header.html" with title=site_name page_type='index' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+    {% if logged_in %}
+    <a class="item" href="/admin">
+      <i class="tachometer alternate icon"></i>Dashboard
+    </a>
+    {% else %}
+    <a class="item" href="/login">
+      <i class="sign in alternate icon"></i>Sign in
+    </a>
+    {% endif %}
+    <a class="search item">
+      <i class="search icon"></i>Search
+    </a>
+  </div>
+  <div class="pusher">
+    <div class="ui top fixed large borderless menu">
+      <div class="ui container">
+        <a class="header item" href="/">{{ site_name }}</a>
+        <div class="right menu">
+          {% for i in page_links %}
+          <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+          {% endfor %}
+          {% if logged_in %}
+          <a class="item" href="/admin">
+            <i class="tachometer alternate icon"></i>Dashboard
+          </a>
+          {% else %}
+          <a class="item" href="/login">
+            <i class="sign in alternate icon"></i>Sign in
+          </a>
+          {% endif %}
+          <a class="search item">
+            <i class="search icon"></i>
+          </a>
+        </div>
+        <a class="toc right item">
+          <i class="sidebar icon"></i>
+        </a>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui hidden section divider"></div>
+    </div>
+    <div class="ui stackable grid container">
+      <div class="eleven wide column">
+        {% if post_list|length %}
+        {% for post in post_list %}
+        <div class="ui raised very padded large segment post-content">
+          <h1 class="ui header">
+            <div class="content">
+              {{ post.title }}
+              {% if logged_in %}
+              <a href="/admin/edit/{{ post.pid }}"><i class="small pencil alternate icon"></i></a>
+              {% endif %}
+            </div>
+            {% if post.top %}
+            <div class="ui left pointing yellow label">
+              <i class="thumbtack icon"></i> Pinned
+            </div>
+            {% endif %}
+          </h1>
+          <div class="ui divider"></div>
+          <div class="row">
+            <div class="ui label">
+              <i class="calendar icon"></i> {{ post.time }}
+            </div>
+            <div class="ui label">
+              <i class="comments icon"></i> {{ post.comments_num }} comment{% if post.comments_num > 1 %}s{% endif %}
+            </div>
+          </div>
+          <div class="ui hidden divider"></div>
+          {{ post.text|safe }}
+          <div class="ui hidden divider"></div>
+          <a href="/archives/{{ post.pid }}">
+            <button class="ui primary labeled icon button">
+              <i class="play icon"></i>
+              Continue Reading
+            </button>
+          </a>
+        </div>
+        {% endfor %}
+        {% else %}
+        <div class="ui raised very padded large segment post-content">
+          <h1 class="ui header">No Results.</h1>
+          <div class="ui divider"></div>
+          <p>This place looks empty...</p>
+        </div>
+        {% endif %}
+        {% include 'pagination.html' %}
+      </div>
+      <div class="five wide column">
+        <div class="ui raised very padded large center aligned segment">
+          <img class="ui small centered circular image main-avatar" src="{{ user_avatar }}">
+          <h3 class="ui hearder">{{ username }}</h3>
+          <div class="ui divider"></div>
+          {{ site_description }}
+          {% if logged_in %}
+          <div class="ui divider"></div>
+          <div class="ui three item menu">
+            <a class="item" href="/admin/edit"><i class="plus icon"></i></i></a>
+            <a class="item" href="/admin"><i class="tachometer alternate icon"></i></a>
+            <a class="item" href="/logout"><i class="sign out alternate icon"></i></a>
+          </div>
+          {% endif %}
+        </div>
+        {% include "recent_posts.html" with recent_post_list=recent_post_list %}
+        {% include "recent_comments.html" with recent_comment_list=recent_comment_list %}
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui section divider"></div>
+      <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+        <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+      </div>
+    </div>
+  </div>
+{% include "footer.html" with page_type='index' %}

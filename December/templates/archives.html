@@ -1,0 +1,147 @@
+{% include "header.html" with title=post_title|add:' - '|add:site_name page_type='archives' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+    {% if logged_in %}
+    <a class="item" href="/admin">
+      <i class="tachometer alternate icon"></i>Dashboard
+    </a>
+    {% else %}
+    <a class="item" href="/login">
+      <i class="sign in alternate icon"></i>Sign in
+    </a>
+    {% endif %}
+    <a class="search item">
+      <i class="search icon"></i>Search
+    </a>
+  </div>
+  <div class="pusher">
+    <div class="ui top fixed large borderless menu">
+      <div class="ui container">
+        <a class="header item" href="/">{{ site_name }}</a>
+        <div class="right menu">
+          {% for i in page_links %}
+          <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+          {% endfor %}
+          {% if logged_in %}
+          <a class="item" href="/admin">
+            <i class="tachometer alternate icon"></i>Dashboard
+          </a>
+          {% else %}
+          <a class="item" href="/login">
+            <i class="sign in alternate icon"></i>Sign in
+          </a>
+          {% endif %}
+          <a class="search item">
+            <i class="search icon"></i>
+          </a>
+        </div>
+        <a class="toc right item">
+          <i class="sidebar icon"></i>
+        </a>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui hidden section divider"></div>
+    </div>
+    <div class="ui stackable grid container">
+      <div class="eleven wide column">
+        <div class="ui raised very padded large segment post-content">
+          <h1 class="ui header">
+            <div class="content">
+              {{ post_title }}
+              {% if logged_in %}
+              <a href="/admin/edit/{{ post_pid }}"><i class="small pencil alternate icon"></i></a>
+              {% endif %}
+            </div>
+          </h1>
+          <div class="ui divider"></div>
+          {% if post_type != "page" %}
+          <div class="row">
+            <div class="ui label">
+              <i class="calendar icon"></i> {{ post_time }}
+            </div>
+            <div class="ui label">
+              <i class="comments icon"></i> {{ post_comments_num }} comment{% if post_comments_num > 1 %}s{% endif %}
+            </div>
+          </div>
+          <div class="ui hidden divider"></div>
+          {% endif %}
+          {% if visible %}
+          {{ post_content|safe }}
+          {% else %}
+          {% include 'messages.html' %}
+          <form class="ui form" method="post">{% csrf_token %}
+            <input type="hidden" name="is-password-form" value="1">
+            <div class="field">
+              <label>Please enter your password to view the content.</label>
+              <input type="password" name="post-password" placeholder="Password">
+              {% include 'hcaptcha.html' %}
+            </div>
+            <button class="ui button" type="submit">Submit</button>
+          </form>
+          {% endif %}
+        </div>
+        {% if visible and post_allow_comment and post_type != "draft" %}
+        <div class="ui raised very padded large segment comment-content">
+          <div id="comment-list" class="ui comments">
+            <h3 class="ui dividing header">
+              {% if post_comments_num == 0 %}
+              No comments yet...
+              {% else %}
+              {{ post_comments_num }} Comment{% if post_comments_num > 1 %}s{% endif %}
+              {% endif %}
+            </h3>
+            {% include "comments.html" %}
+            {% include 'messages.html' %}
+            <form id="reply-form" class="ui reply form" method="post">{% csrf_token %}
+              <input id="comment-parent" type="hidden" name="comment-parent" value="0">
+              {% if logged_in %}
+              <input type="hidden" name="comment-logged-in" value="1">
+              {% else %}
+              <div class="three fields">
+                <div class="required field">
+                  <label>Name</label>
+                  <input id="comment-name" type="text" name="comment-name" placeholder="Name" maxlength="200" required>
+                </div>
+                <div class="required field">
+                  <label>E-mail</label>
+                  <input id="comment-email" type="email" name="comment-email" placeholder="example@gmail.com" maxlength="200" required>
+                </div>
+                <div class="field">
+                  <label>Website</label>
+                  <input id="comment-url" type="url" name="comment-url" placeholder="https://example.com" maxlength="255">
+                </div>
+              </div>
+              {% endif %}
+              <div class="required field">
+                <label>Comment{% if logged_in %} (replying as {{ username }}){% endif %}</label>
+                <textarea id="comment-content" name="comment-content" placeholder="Leave a comment!" required></textarea>
+              </div>
+              <button class="ui blue labeled submit icon button" type="submit">
+                <i class="comments outline icon"></i> Add Reply
+              </button>
+              <div id="cancel-reply" class="ui red labeled icon button" onclick="DecemberReply('0')" style="display: none;">
+                <i class="close icon"></i> Cancel reply
+              </div>
+              {% include 'hcaptcha.html' %}
+            </form>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+      <div class="five wide column">
+        {% include "recent_posts.html" with recent_post_list=recent_post_list %}
+        {% include "recent_comments.html" with recent_comment_list=recent_comment_list %}
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui section divider"></div>
+      <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+        <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+      </div>
+    </div>
+  </div>
+{% include "footer.html" with page_type='archives' %}

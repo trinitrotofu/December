@@ -1,0 +1,30 @@
+{% for i in comments %}
+<div class="comment">
+  <a class="avatar">
+    <img src="https://www.gravatar.com/avatar/{{ i.email_hash }}">
+  </a>
+  <div id="comment-{{ i.cid }}" class="content">
+    {% if i.url|length %}
+    <a class="author" href="{{ i.url }}">{{ i.author }}</a>
+    {% else %}
+    <a class="author" href="#comment-{{ i.cid }}">{{ i.author }}</a>
+    {% endif %}
+    <div class="metadata">
+      <span class="date">{{ i.time }}</span>
+    </div>
+    {% if i.is_admin %}
+    <div class="ui blue mini label">Author</div>
+    {% endif %}
+    <div class="text">{{ i.text|linebreaks }}</div>
+    <div class="actions">
+      <a class="reply" onclick="DecemberReply('{{ i.cid }}')"><i class="reply icon"></i>Reply</a>
+      {% if logged_in %}<a href="/admin/edit-comment/{{ i.cid }}"><i class="pencil icon"></i>Edit</a>{% endif %}
+    </div>
+  </div>
+  {% if i.children|length %}
+  <div class="comments">
+    {% include "comments.html" with comments=i.children %}
+  </div>
+  {% endif %}
+</div>
+{% endfor %}

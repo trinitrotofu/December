@@ -1,0 +1,141 @@
+{% include "header.html" with title=page_title|add:' - '|add:site_name page_type='edit_comment' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+  </div>
+  <form id="edit-form" class="ui form" method="post" autocomplete="off">{% csrf_token %}
+    <div class="pusher">
+      <div class="ui top fixed large borderless menu">
+        <div class="ui container">
+          <a class="header item" href="/">{{ site_name }}</a>
+          <div class="right menu">
+            {% for i in page_links %}
+            <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+            {% endfor %}
+          </div>
+          <a class="toc right item">
+            <i class="sidebar icon"></i>
+          </a>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui hidden section divider"></div>
+      </div>
+      <div class="ui stackable grid container">
+        <div class="eleven wide column">
+          <div class="ui raised very padded large segment">
+            <h4 class="ui header">
+              Editing 
+              <a href="/archives/{{ comment_pid }}#comment-{{ cid }}">
+                {{ comment_author }}'s comment <i class="external alternate icon"></i>
+              </a>
+            </h4>
+            <div class="required field">
+              <textarea name="comment-content" rows="18" required>{{ comment_content }}</textarea>
+            </div>
+            <button id="save-btn" class="ui primary labeled submit icon button" type="submit">
+              <i class="save icon"></i> Save
+            </button>
+            <div id="delete-btn" class="ui red labeled submit icon button">
+              <i class="trash icon"></i> Delete
+            </div>
+            <div id="delete-modal" class="ui basic tiny modal">
+              <div class="ui header">
+                Warning!
+              </div>
+              <div class="content">
+                <p>Are you sure you want to delete this comment?</p>
+                <p>This will also delete all replies belonging to this comment.</p>
+                <p>This action cannot be undone!</p>
+              </div>
+              <div class="actions">
+                <div class="ui basic cancel inverted button">
+                  <i class="remove icon"></i>
+                  Cancel
+                </div>
+                <div class="ui red confirm inverted button">
+                  <i class="trash icon"></i>
+                  Delete
+                </div>
+              </div>
+            </div>
+            <script>
+              $('#delete-btn').click(function() {
+                $('#delete-modal').modal('show');
+              });
+              $('#delete-modal .cancel').click(function() {
+                $('#delete-modal').modal('hide');
+              });
+              $('#delete-modal .confirm').click(function() {
+                window.location.href = "/admin/edit-comment/{{ cid }}?action=delete"
+              });
+            </script>
+          </div>
+        </div>
+        <div class="five wide column">
+          <div class="ui raised very padded large segment">
+            <h4 class="ui header">Comment settings</h4>
+            <div class="field">
+              <label>Comment status</label>
+              <div class="ui selection dropdown" id="status-select">
+                <div class="text"></div>
+                <input type="hidden" name="comment-status">
+                <i class="dropdown icon"></i>
+              </div>
+            </div>
+            <div class="ui divider"></div>
+            <div class="required {% if comment_is_admin %}disabled {% endif %}field">
+              <label>Name</label>
+              <input type="text" name="comment-author" value="{{ comment_author }}" maxlength="200" required>
+            </div>
+            <div class="required {% if comment_is_admin %}disabled {% endif %}field">
+              <label>E-mail</label>
+              <input type="email" name="comment-email" value="{{ comment_email }}" maxlength="200" required>
+            </div>
+            <div class="{% if comment_is_admin %}disabled {% endif %}field">
+              <label>Website</label>
+              <input type="url" name="comment-url" value="{{ comment_url }}" maxlength="255">
+            </div>
+            <div class="ui divider"></div>
+            <div class="field">
+              <label>Comment time (Unix timestamp)</label>
+              <input id="comment-time" type="number" name="comment-time" placeholder="Leave blank to set as now" value="{{ comment_time }}">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui section divider"></div>
+        <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+          <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script>
+    $('#status-select')
+      .dropdown({
+        values: [
+          {
+            name: 'Approved',
+            value: 'published'
+          },
+          {
+            name: 'Pending',
+            value: 'pending'
+          },
+        ]
+      })
+      .dropdown('set selected', '{{ comment_status }}');
+    var form_original_serial = $("#edit-form").serialize();
+    $(window).on('beforeunload', function() {
+      if ($("#edit-form").serialize() != form_original_serial)
+        return 'Are you sure you want to leave without saving? This will cause changes to be lost.';
+    });
+    $('#save-btn').click(function() {
+      form_original_serial = $("#edit-form").serialize();
+    });
+  </script>
+{% include "footer.html" with page_type='edit_comment' %}

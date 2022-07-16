@@ -1,0 +1,19 @@
+{% if hcaptcha %}
+{% if not logged_in and hcaptcha_key|length %}
+<div class="h-captcha" data-size="invisible" data-callback="onSubmit" data-sitekey="{{ hcaptcha_key }}"></div>
+<script src="https://js.hcaptcha.com/1/api.js?hl=en" async defer></script>
+<script>
+  var hcaptcha_status = false;
+  function onSubmit(token) {
+      hcaptcha_status = true;
+      $('.h-captcha').closest('form').submit();
+  }
+  $('.h-captcha').closest('form').submit(function(e){
+      if (!hcaptcha_status) {
+          e.preventDefault();
+          hcaptcha.execute();
+      }
+  });
+</script>
+{% endif %}
+{% endif %}

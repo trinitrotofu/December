@@ -1,0 +1,63 @@
+  <script>
+    $('.message .close').on('click', function() {
+      $(this)
+        .closest('.message')
+        .transition('fade');
+    });
+    $('.ui.selection.dropdown').css("min-width", "0");
+    $('.search-btn').on('click', function() {
+      $(this)
+        .closest('form')
+        .submit();
+    });
+  </script>
+  {% if page_type == 'index' or page_type == 'archives' or page_type == 'edit' or page_type == 'edit_comment' or page_type == 'admin' or page_type == 'settings' or page_type == 'media' %}
+  <script>
+    $('.top.fixed.borderless.menu .toc.right.item').on('click', function() {
+      $('.ui.sidebar')
+        .sidebar('toggle')
+      ;
+    });
+  </script>
+  {% endif %}
+  {% if page_type == 'index' or page_type == 'archives' %}
+  <div id="search-modal" class="ui mini modal">
+    <i class="close icon"></i>
+    <div class="header">
+      Search...
+    </div>
+    <div class="content">
+      <form class="ui form" action="/" method="get">
+        <div class="field">
+          <div class="ui action input">
+            <input type="text" name="s" value="{{ search_value }}">
+            <button class="ui primary icon button">
+              <i class="search icon"></i>
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+  <script>
+    $('.ui.menu .item.search').click(function() {
+      $('#search-modal')
+        .modal('setting', 'closable', false)
+        .modal('show');
+    });
+    $('pre').addClass("line-numbers");
+    $('.post-content img').addClass("ui rounded image");
+    $('.post-content table').addClass("ui celled unstackable table");
+    $('.post-content ul').addClass("ui list");
+    $('.post-content ol').addClass("ui list");
+    $('.post-content hr').replaceWith('<div class="ui divider"></div>')
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/components/prism-core.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/autoloader/prism-autoloader.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/toolbar/prism-toolbar.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/show-language/prism-show-language.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/prismjs@1.20.0/plugins/line-numbers/prism-line-numbers.min.js"></script>
+  {% endif %}
+</body>
+</html>

@@ -1,0 +1,21 @@
+{% if pagination|length %}
+<div class="ui fluid center aligned container">
+  <div class="ui icon pagination menu">
+    {% for i in pagination %}
+    <{{ i.3 }} class="{{ i.2 }} item"{% if i.1|length %} href="{{ i.1 }}"{% endif %}>
+      {% if i.0 == '<' %}
+      <i class="angle left icon"></i>
+      {% elif i.0 == '>' %}
+      <i class="angle right icon"></i>
+      {% elif i.0 == '<<' %}
+      <i class="angle double left icon"></i>
+      {% elif i.0 == '>>' %}
+      <i class="angle double right icon"></i>
+      {% else %}
+      {{ i.0 }}
+      {% endif %}
+    </{{ i.3 }}>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}

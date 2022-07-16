@@ -1,0 +1,14 @@
+{% if messages %}
+{% for message in messages %}
+{% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+<div class="ui tiny error message">
+{% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+<div class="ui tiny positive message">
+{% else %}
+<div class="ui tiny warning message">
+{% endif %}
+  <i class="close icon"></i>
+  {{ message }}
+</div>
+{% endfor %}
+{% endif %}

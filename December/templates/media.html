@@ -1,0 +1,120 @@
+{% include "header.html" with title='Media Library - '|add:site_name page_type='media' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+  </div>
+  <div class="pusher">
+    <div class="ui top fixed large borderless menu">
+      <div class="ui container">
+        <a class="header item" href="/">{{ site_name }}</a>
+        <div class="right menu">
+          {% for i in page_links %}
+          <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+          {% endfor %}
+        </div>
+        <a class="toc right item">
+          <i class="sidebar icon"></i>
+        </a>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui hidden section divider"></div>
+    </div>
+    <div class="ui stackable centered grid container">
+      <div class="twelve wide column">
+        <div class="ui raised very padded large segment">
+          <h1 class="ui dividing header">Media Library</h1>
+          {% include 'messages.html' %}
+          <form class="ui form" method="post" enctype="multipart/form-data">{% csrf_token %}
+            <div class="field">
+              <label>Upload new</label>
+              <input type="file" name="new-file" required>
+            </div>
+            <button class="ui primary labeled submit icon button" type="submit">
+              <i class="cloud upload icon"></i> Upload
+            </button>
+          </form>
+          <div class="ui divider"></div>
+          {% if media_list|length %}
+          <form class="ui form" method="get">
+            <input type="submit" style="display: none;">
+            <div class="field">
+              <label>Key words</label>
+              <div class="ui icon input">
+                <input type="text" placeholder="Key words..." name="search" value="{{ search }}">
+                <i class="search-btn search link icon"></i>
+              </div>
+            </div>
+          </form>
+          <div class="ui hidden divider"></div>
+          <table class="ui celled unstackable table">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Time</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in media_list %}
+              <tr>
+                <td style="word-break: break-all;">
+                  <a href="/media/{{ i.path }}" target="_blank">{{ i.name }}</a>
+                </td>
+                <td>{{ i.time }}</td>
+                <td class="collapsing center aligned">
+                  <i class="trash link red icon delete-btn" data-media-id="{{ i.mid }}"></i>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          {% else %}
+          <p>How about uploading a new one?</p>
+          {% endif %}
+          {% include 'pagination.html' %}
+        </div>
+      </div>
+    </div>
+    <div class="ui center aligned container">
+      <div class="ui section divider"></div>
+      <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+        <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+      </div>
+    </div>
+  </div>
+  <div id="delete-modal" class="ui basic tiny modal">
+    <div class="ui header">
+      Warning!
+    </div>
+    <div class="content">
+      <p>Are you sure you want to delete this file?</p>
+      <p>This action cannot be undone!</p>
+    </div>
+    <div class="actions">
+      <div class="ui basic cancel inverted button">
+        <i class="remove icon"></i>
+        Cancel
+      </div>
+      <div class="ui red confirm inverted button">
+        <i class="trash icon"></i>
+        Delete
+      </div>
+    </div>
+  </div>
+  <script>
+    var delete_mid = 0;
+    $('.delete-btn').click(function() {
+      delete_mid = $(this).attr("data-media-id");
+      $('#delete-modal').modal('show');
+    });
+    $('#delete-modal .cancel').click(function() {
+      $('#delete-modal').modal('hide');
+    });
+    $('#delete-modal .confirm').click(function() {
+      window.location.href = "/admin/media?action=delete&mid=" + delete_mid;
+    });
+  </script>
+{% include "footer.html" with page_type='media' %}

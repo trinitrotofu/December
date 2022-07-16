@@ -1,0 +1,32 @@
+{% include "header.html" with title='Login - '|add:site_name page_type='login' %}
+  <div class="ui middle aligned center aligned grid" style="height: 100%;">
+    <div class="column" style="max-width: 450px;">
+      <h2 class="ui header">
+        <img class="ui medium circular image" src="/static/img/icon_m.png">
+        <div class="content" style="font-weight: 500;">Welcome back!</div>
+      </h2>
+      <div class="ui segment">
+        {% include 'messages.html' %}
+        <form class="ui form" action="/login" method="post">{% csrf_token %}
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="user icon"></i>
+              <input type="text" name="user" placeholder="Username / E-mail" value="{{ user }}" required>
+            </div>
+          </div>
+          <div class="field">
+            <div class="ui left icon input">
+              <i class="lock icon"></i>
+              <input type="password" name="password" placeholder="Password" required>
+            </div>
+          </div>
+          <button class="ui fluid large primary submit button" type="submit">Confirm!</button>
+          {% include 'hcaptcha.html' with logged_in=False %}
+        </form>
+      </div>
+      <div class="ui message">
+        <a href="/">← back to homepage</a>
+      </div>
+    </div>
+  </div>
+{% include "footer.html" with page_type='login' %}

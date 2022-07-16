@@ -1,0 +1,71 @@
+body, .pusher {
+    background: #DADADA !important;
+}
+
+.top.fixed.borderless.menu .toc.right.item {
+    display: none;
+}
+
+@media only screen and (max-width: 700px) {
+    .top.fixed.borderless.menu .toc.right.item {
+        display: flex;
+    }
+    .top.fixed.borderless.menu .right.menu {
+        display: none;
+    }
+}
+
+.collapse.menu {
+    margin: 0.7rem;
+    width: calc(100% - 1.4rem) !important;
+    position: fixed;
+    z-index: 1000;
+}
+
+.post-content img {
+    max-width: 100%;
+}
+
+.post-content blockquote {
+    border-left: 4px solid #777777;
+    font-size: 16px;
+    line-height: 1.5;
+    padding: 0em 2em;
+    margin: 1em 0em 2em;
+}
+
+.post-content code:not(pre code) {
+    padding: 2px 4px;
+    color: #c7254e;
+    background-color: #f9f2f4;
+    border-radius: 4px;
+}
+
+.post-content {
+    word-wrap: break-word;
+}
+
+.comment-content .ui.button {
+    margin-bottom: 8px;
+}
+
+.main-avatar:hover {
+    transform: rotate(360deg);
+}
+
+.main-avatar {
+    transition: all 1.0s;
+}
+
+.ui.form .CodeMirror {
+    border-radius: .28571429rem;
+    border: 1px solid rgba(34,36,38,.15);
+}
+
+.ui.form .CodeMirror-scroll {
+    padding: .78571429em 1em;
+}
+
+.ui.form .CodeMirror-focused {
+    border: 1px solid #85b7d9;
+}

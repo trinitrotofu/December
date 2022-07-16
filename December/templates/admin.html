@@ -1,0 +1,165 @@
+{% include "header.html" with title='Dashboard - '|add:site_name page_type='admin' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+  </div>
+  <form class="ui form" method="get">
+    <input type="submit" style="display: none;">
+    <div class="pusher">
+      <div class="ui top fixed large borderless menu">
+        <div class="ui container">
+          <a class="header item" href="/">{{ site_name }}</a>
+          <div class="right menu">
+            {% for i in page_links %}
+            <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+            {% endfor %}
+          </div>
+          <a class="toc right item">
+            <i class="sidebar icon"></i>
+          </a>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui hidden section divider"></div>
+      </div>
+      <div class="ui stackable grid container">
+        <div class="ten wide column">
+          <div class="ui raised very padded large segment">
+            <h1 class="ui dividing header">
+              <div class="content">
+                {{ post_cnt }} Article{% if post_cnt > 1 %}s{% endif %}
+              </div>
+              <a class="ui primary compact right floated button" href="/admin/edit">
+                <i class="plus icon"></i> New
+              </a>
+            </h1>
+            {% include 'messages.html' %}
+            <div class="fields">
+              <div class="six wide field">
+                <label>Article type</label>
+                <div class="ui selection dropdown" id="search-type">
+                  <div class="text"></div>
+                  <input type="hidden" name="post-type">
+                  <i class="dropdown icon"></i>
+                </div>
+              </div>
+              <div class="ten wide field">
+                <label>Key words</label>
+                <div class="ui icon input">
+                  <input type="text" placeholder="Key words..." name="post-search" value="{{ post_search }}">
+                  <i class="search-btn search link icon"></i>
+                </div>
+              </div>
+            </div>
+            {% if post_list|length %}
+            <table class="ui celled unstackable table">
+              <thead>
+                <tr>
+                  <th>Title</th>
+                  <th>Type</th>
+                  <th>Time</th>
+                  <th>Edit</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for i in post_list %}
+                <tr>
+                  <td style="word-break: break-all;">
+                    <a href="/archives/{{ i.pid }}">{{ i.title }}</a>{%if i.protected %} <i class="lock icon"></i>{% endif %}
+                  </td>
+                  <td>{{ i.type }}</td>
+                  <td>{{ i.time }}</td>
+                  <td class="collapsing center aligned">
+                    <a href="/admin/edit/{{ i.pid }}">
+                      <i class="pencil alternate icon"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% else %}
+            <p>How about adding a new one?</p>
+            {% endif %}
+            {% include 'pagination.html' with pagination=post_pagination %}
+          </div>
+        </div>
+        <div class="six wide column">
+          <div class="ui raised very padded large segment">
+            <h1 class="ui dividing header">{{ comment_cnt }} Comment{% if comment_cnt > 1 %}s{% endif %}</h1>
+            <div class="field">
+              <label>Key words</label>
+              <div class="ui icon input">
+                <input type="text" placeholder="Key words..." name="comment-search" value="{{ comment_search }}">
+                <i class="search-btn search link icon"></i>
+              </div>
+            </div>
+            {% if comment_list|length %}
+            {% for i in comment_list %}
+            <div class="ui comments">
+              <div class="comment">
+                <a class="avatar">
+                  <img src="https://www.gravatar.com/avatar/{{ i.email_hash }}">
+                </a>
+                <div class="content">
+                  <a class="author" href="/archives/{{ i.pid }}#comment-{{ i.cid }}">{{ i.author }}</a>
+                  <div class="metadata">
+                    <span class="date">{{ i.time }}</span>
+                  </div>
+                  <div class="text">{{ i.text|linebreaks }}</div>
+                  <div class="actions">
+                    <a href="/archives/{{ i.pid }}#comment-{{ i.cid }}">
+                      <i class="external alternate icon"></i>
+                      View
+                    </a>
+                    <a href="/admin/edit-comment/{{ i.cid }}">
+                      <i class="pencil icon"></i>
+                      Edit
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <p>No comments yet...</p>
+            {% endif %}
+            {% include 'pagination.html' with pagination=comment_pagination %}
+          </div>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui section divider"></div>
+        <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+          <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script>
+    $('#search-type')
+      .dropdown({
+        values: [
+          {
+            name: 'All',
+            value: 'all'
+          },
+          {
+            name: 'Post',
+            value: 'post'
+          },
+          {
+            name: 'Page',
+            value: 'page'
+          },
+          {
+            name: 'Draft',
+            value: 'draft'
+          },
+        ]
+      })
+      .dropdown('set selected', '{{ post_type }}');
+  </script>
+{% include "footer.html" with page_type='admin' %}

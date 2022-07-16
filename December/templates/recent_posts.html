@@ -1,0 +1,16 @@
+<div class="ui raised very padded large segment">
+  <h4 class="ui header">Recent Posts</h4>
+  {% if recent_post_list|length %}
+  <div class="ui divided list">
+    {% for post in recent_post_list %}
+    <div class="item">
+      <div class="content">
+        <a href="/archives/{{ post.pid }}">{{ post.title }}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>The place looks as empty as a desert...</p>
+  {% endif %}
+</div>

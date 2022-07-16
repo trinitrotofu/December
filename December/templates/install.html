@@ -1,0 +1,45 @@
+{% include "header.html" with title='Install - December' page_type='install' icon_url='/static/img/icon_m.png' %}
+  <div class="ui padded grid">
+    <div class="column">
+      <div class="ui raised very padded text container segment">
+        <h1 class="ui header">
+          <img class="ui medium circular image" src="/static/img/icon_m.png">
+          <div class="content">Welcome!</div>
+        </h1>
+        <p>Welcome to the installer for December blog system. This will not take too long.</p>
+        <div class="ui divider"></div>
+        {% include 'messages.html' %}
+        <form class="ui form" method="post" autocomplete="off">{% csrf_token %}
+          <div class="required field">
+            <label>Site name</label>
+            <input type="text" name="site-name" placeholder="Site name" value="{{ site_name }}" required>
+          </div>
+          <div class="field">
+            <label>Site description</label>
+            <input type="text" name="site-description" placeholder="Site description" value="{{ site_description }}">
+          </div>
+          <div class="ui divider"></div>
+          <div class="required field">
+            <label>Username</label>
+            <input type="text" name="username" placeholder="Username" value="{{ username }}" required>
+          </div>
+          <div class="required field">
+            <label>E-mail</label>
+            <input type="email" name="email" placeholder="E-mail" value="{{ email }}" required>
+          </div>
+          <div class="required field">
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Password" minlength="6" maxlength="32" required>
+          </div>
+          <div class="required field">
+            <label>Confirm password</label>
+            <input type="password" name="confirm-password" placeholder="Confirm password" minlength="6" maxlength="32" required>
+          </div>
+          <button class="ui primary labeled submit icon button" type="submit">
+            <i class="arrow alternate circle down outline icon"></i> Install
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+{% include "footer.html" with page_type='install' %}

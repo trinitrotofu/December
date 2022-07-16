@@ -1,0 +1,178 @@
+{% include "header.html" with title=page_title|add:' - '|add:site_name page_type='edit' %}
+  <div class="ui right sidebar vertical menu">
+    <a class="header item" href="/">{{ site_name }}</a>
+    {% for i in page_links %}
+    <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+    {% endfor %}
+  </div>
+  <form id="edit-form" class="ui form" method="post" autocomplete="off">{% csrf_token %}
+    <div class="pusher">
+      <div class="ui top fixed large borderless menu">
+        <div class="ui container">
+          <a class="header item" href="/">{{ site_name }}</a>
+          <div class="right menu">
+            {% for i in page_links %}
+            <a class="item" href="{{ i.1 }}">{{ i.0|safe }}</a>
+            {% endfor %}
+          </div>
+          <a class="toc right item">
+            <i class="sidebar icon"></i>
+          </a>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui hidden section divider"></div>
+      </div>
+      <div class="ui stackable grid container">
+        <div class="eleven wide column">
+          <div class="ui raised very padded large segment">
+            <h4 class="ui header">
+              {% if pid == 0 %}
+              {{ page_title }}
+              {% else %}
+              Editing 
+              <a href="/archives/{{ pid }}">
+                {{ post_title }} <i class="external alternate icon"></i>
+              </a>
+              {% endif %}
+            </h4>
+            <div class="field">
+              <input type="text" name="post-title" placeholder="Title" value="{{ post_title }}" autocomplete="off">
+            </div>
+            <div class="field">
+              <textarea id="editor" name="post-content" placeholder="Please use Markdown here...">{{ post_content }}</textarea>
+            </div>
+            <button id="save-btn" class="ui primary labeled submit icon button" type="submit">
+              <i class="save icon"></i> Save
+            </button>
+            {% if pid != 0 %}
+            <div id="delete-btn" class="ui red labeled submit icon button">
+              <i class="trash icon"></i> Delete
+            </div>
+            <div id="delete-modal" class="ui basic tiny modal">
+              <div class="ui header">
+                Warning!
+              </div>
+              <div class="content">
+                <p>Are you sure you want to delete this article?</p>
+                <p>This will also delete all comments belonging to this article.</p>
+                <p>This action cannot be undone!</p>
+              </div>
+              <div class="actions">
+                <div class="ui basic cancel inverted button">
+                  <i class="remove icon"></i>
+                  Cancel
+                </div>
+                <div class="ui red confirm inverted button">
+                  <i class="trash icon"></i>
+                  Delete
+                </div>
+              </div>
+            </div>
+            <script>
+              $('#delete-btn').click(function() {
+                $('#delete-modal').modal('show');
+              });
+              $('#delete-modal .cancel').click(function() {
+                $('#delete-modal').modal('hide');
+              });
+              $('#delete-modal .confirm').click(function() {
+                window.location.href = "/admin/edit/{{ pid }}?action=delete"
+              });
+            </script>
+            {% endif %}
+          </div>
+        </div>
+        <div class="five wide column">
+          <div class="ui raised very padded large segment">
+            <h4 class="ui header">Article settings</h4>
+            <div class="field">
+              <label>Article type</label>
+              <div class="ui selection dropdown" id="type-select">
+                <div class="text"></div>
+                <input type="hidden" name="post-type">
+                <i class="dropdown icon"></i>
+              </div>
+            </div>
+            <div class="ui divider"></div>
+            <div class="field">
+              <div class="ui checkbox" id="protected-checkbox">
+                <input type="checkbox" name="protected" {% if post_protected %}checked{% endif %}>
+                <label>Use password protection</label>
+              </div>
+            </div>
+            <div class="field">
+              <label>Password</label>
+              <input id="password" type="text" name="password" placeholder="Password" value="{{ post_password }}">
+            </div>
+            <div class="ui divider"></div>
+            <div class="field">
+              <div class="ui checkbox" id="allow-comment-checkbox">
+                <input type="checkbox" name="allow-comment" {% if post_allow_comment %}checked{% endif %}>
+                <label>Allow comments</label>
+              </div>
+            </div>
+            <div class="field">
+              <div class="ui checkbox" id="top-checkbox">
+                <input type="checkbox" name="top" {% if post_top %}checked{% endif %}>
+                <label>Top</label>
+              </div>
+            </div>
+            <div class="ui divider"></div>
+            <div class="field">
+              <label>Release time (Unix timestamp)</label>
+              <input id="post-time" type="number" name="post-time" placeholder="Leave blank to set as now" value="{{ post_time }}">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="ui center aligned container">
+        <div class="ui section divider"></div>
+        <div class="ui horizontal small divided link list" style="margin-top: 0; margin-bottom: 14px;">
+          <div class=item>Powered by <a href="https://github.com/trinitrotofu/December">December</a></div>
+        </div>
+      </div>
+    </div>
+  </form>
+  <script>
+    $('#type-select')
+      .dropdown({
+        values: [
+          {
+            name: 'Post',
+            value: 'post'
+          },
+          {
+            name: 'Page',
+            value: 'page'
+          },
+          {
+            name: 'Draft',
+            value: 'draft'
+          },
+        ]
+      })
+      .dropdown('set selected', '{{ post_type }}');
+    $('.ui.checkbox').checkbox();
+    var cm_editor = CodeMirror.fromTextArea(
+      document.getElementById("editor"),
+      {
+        mode: "markdown",
+        lineWrapping: true,
+        tabSize: 2,
+        indentWithTabs: true,
+      }
+    );
+    cm_editor.setSize(null, 350);
+    var form_original_serial = $("#edit-form").serialize();
+    $(window).on('beforeunload', function() {
+      cm_editor.save();
+      if ($("#edit-form").serialize() != form_original_serial)
+        return 'Are you sure you want to leave without saving? This will cause changes to be lost.';
+    });
+    $('#save-btn').click(function() {
+      cm_editor.save();
+      form_original_serial = $("#edit-form").serialize();
+    });
+  </script>
+{% include "footer.html" with page_type='edit' %}
