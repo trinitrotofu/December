@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from django.http import HttpResponseRedirect, Http404
+from django.http import Http404
 from django.contrib import messages
 from django.core.exceptions import SuspiciousOperation
 from . import installer, settings, auth, smtp
@@ -12,7 +12,7 @@ from .functions import get_option, set_option, get_navigation_links, \
         get_admin_comment_list, get_admin_pagination, delete_comment, \
         get_site_icon, get_advanced_option, get_media_list, save_media, \
         media_exist, delete_media, hcaptcha_verify
-import time, re, requests, json, mimetypes
+import time, re, mimetypes
 
 POST_NUM_PER_PAGE = 5
 ADMIN_POST_PER_PAGE = 15
@@ -271,6 +271,16 @@ def archives_page(request, pid):
         if content == "":
             messages.error(request, "Comment content cannot be empty")
             flag = True
+        comment_re = get_advanced_option("comment-re")
+        if comment_re != None:
+            for r in comment_re:
+                if re.search(r, content, re.IGNORECASE) != None:
+                    messages.error(
+                        request,
+                        "Comment content containing prohibited words"
+                    )
+                    flag = True
+                    break
         if flag:
             return redirect(page_url + "#reply-form")
         cid = save_comment(
