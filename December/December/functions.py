@@ -19,7 +19,7 @@ def get_option(name):
 def get_advanced_option(name, default=None):
     try:
         return json.loads(get_option("advanced_settings")).get(name, default)
-    except json.JSONDecodeError:
+    except:
         return default
 
 def get_site_icon():

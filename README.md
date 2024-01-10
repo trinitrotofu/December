@@ -57,18 +57,21 @@ Then, visit `address_of_your_machine:8080`. You should now be able to see the sy
 **Some Tips:**
 
 + If you want to use another port, please replace "8080" in the command with the port number you want to use.
-+ If you want to persist the data (mount the volume), you can use this command instead (assuming that the working directory of the blog system, i.e. the directory where your `db.sqlite3` is located, is `/www-data/December`):
++ If you want to persist the data (mount the volume), you can use this command instead (assuming that the working directory of the blog system is `/www-data/December`):
 
 ```shell
 docker run --name december-blog --restart unless-stopped \
-        -v /www-data/December/db.sqlite3:/December/December/db.sqlite3 \
+        -v /www-data/December/db:/December/December/db \
         -v /www-data/December/configs:/December/December/configs \
         -v /www-data/December/media:/December/December/media \
         -p 8080:80 \
         -d trinitrotofu/december
 ```
 
-Note: you only need to mount `db.sqlite3`, `configs` and `media`, since your data is only stored in these three things.
+Note:
+
++ `db` is the directory where your `db.sqlite3` is located.
++ You only need to mount `db`, `configs` and `media`, since your data is only stored in these three places.
 
 ### Install via Source Code
 
@@ -202,6 +205,44 @@ More icons: [https://semantic-ui.com/elements/icon.html](https://semantic-ui.com
 
 If you do not set this value, then the default value will be used: 5 per page.
 
+### Comment Prohibited Words
+
+Due to increasingly rampant spam comments, hCaptcha cannot stop all of them for us. This advanced setting can let you set some customized prohibited words by using [regex (python)](https://docs.python.org/3/library/re.html).
+
++ Key: `comment-re`
++ Value: a list of string, contains the rules(regex) that you do not want to see in comments
++ Format: `"comment-re": ["regex1", "regex2", ..., "regexn"]`
++ Example advanced settings:
+
+```json
+"comment-re": [
+  "I am a bot",
+  "Test [0-9]+\\.[0-9]+"
+]
+```
+
+In this example, the following comments will be banned due to the first rule:
+
++ `I am a bot`
++ `i AM a bOt`
++ `Hi, I am a bot.`
+
+The following comments will be banned due to the second rule:
+
++ `test 1.0`
++ `test 1.2.3`
++ `This is TEST 3.0.`
+
+These comments will NOT be banned:
+
++ `I am bot.`
++ `This is test 1.`
+
+Note:
+
++ The system is using `re.search` method, so a comment will be banned as long as it "contains" one of the rules
++ The rule matching is case-insensitive
+
 ### hCaptcha
 
 The system natively support [hCaptcha](https://www.hcaptcha.com/), to protect you from spam comments and password cracking.
@@ -280,6 +321,11 @@ You may need to use the SMTP service to send notifications to yourself or to oth
 + [ ] More advanced settings
 
 ## Release History
+
+### 1.4.5
+
++ Add advanced setting: `comment-re` (Comment Prohibited Words)
++ Critical bug fixes
 
 ### 1.4.4
 
